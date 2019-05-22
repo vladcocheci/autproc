@@ -32,6 +32,8 @@ def scraper(first, last, year):
     tuple_list = urls_files_list(link, first, last, year)   # list of tuples containing pairs of type (source url, destination_file_name)
     rec = []                                                # a list of recordings (lists) containing the requested data
     counter = first
+    URL_exceptions_file_name = "URL_exceptions_" + str(year) + ".txt"
+    HTTP_exceptions_file_name = "HTTP_exceptions_" + str(year) + ".txt" 
 
     for (url, file_name) in tuple_list:
         try:
@@ -110,10 +112,17 @@ def scraper(first, last, year):
                 data_creare = "01.01.1000"
             rec += [[titlu, data_emiterii, lucrare, adresa, conditii, cf, topo, valoare, proiectat, valoare_org_santier, titular, nr_cerere, data_cerere, intocmit, data_creare]]
 
-        except:
-            exceptions_file = open("exeptions.txt",'w')
-            exceptions_file.write(file_name)
-            exceptions_file.close()
+        except urllib.error.HTTPError as e:
+            HTTPexceptions_file = open(HTTP_exceptions_file_name,'a')
+            err = file_name + " " + str(e) + "\n"
+            HTTPexceptions_file.write(err)
+            HTTPexceptions_file.close()
+
+        except urllib.error.URLError as e:
+            URLexceptions_file = open(URL_exceptions_file_name,'a')
+            err = file_name + " " + str(e) + "\n"
+            URLexceptions_file.write(err)
+            URLexceptions_file.close()
 
         time.sleep(1) # a short pause to avoid overloading the server
         print(counter)
