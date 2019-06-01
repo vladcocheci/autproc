@@ -2,6 +2,7 @@ import pandas as pd
 import nltk
 import re
 from datetime import date, datetime
+from postal.parser import parse_address
 
 # input_file = '2014.csv'
 # df = pd.read_csv(input_file)
@@ -64,15 +65,30 @@ def autproc(input_file):
         actiuni.append(act)
     df['actiuni'] = actiuni
 
+    street_list = []
+    no_list = []
+    for adresa in df['adresa']:
+        street_name = 'fara strada'
+        house_no = 'fara numar'
+        for element_adresa in parse_address(adresa):
+            if element_adresa[1] == 'road':
+                street_name = element_adresa[0]
+            if element_adresa[1] == 'house_number':
+                house_no = element_adresa[0]
+        street_list.append(street_name)
+        no_list.append(house_no)
+    df['strada'] = street_list
+    df['nr'] = no_list
+
     proiectat_list = [proiectat_cleaner(p) for p in df['proiectat']] # list containing the designers
     df['proiectant'] = proiectat_list
 
     rec = []
     for index, row in df.iterrows():
-        rec.append([row['titlu'], row['proiectant'], row['data_emiterii'], row['actiuni'], row['adresa'], row['intocmit'], row['durata_emitere'], row['durata_creare']])
+        rec.append([row['titlu'], row['proiectant'], row['data_emiterii'], row['actiuni'], row['adresa'], row['strada'], row['nr'], row['intocmit'], row['durata_emitere'], row['durata_creare']])
     
     # writing the output in a .csv file
-    df_p = pd.DataFrame(rec, columns=['titlu','proiectant','data_emiterii','actiuni','adresa','intocmit','durata_emitere','durata_creare'])
+    df_p = pd.DataFrame(rec, columns=['titlu','proiectant','data_emiterii','actiuni','adresa','strada','nr','intocmit','durata_emitere','durata_creare'])
     output_file = "processed_" + input_file
     df_p.to_csv(output_file, index = False)
 
