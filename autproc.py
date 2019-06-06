@@ -47,6 +47,15 @@ def autproc(input_file):
     date1_list, date2_list, date3_list = [format_date1(d) for d in df['data_emiterii']], [format_date2(d) for d in df['data_cerere']], [format_date2(d) for d in df['data_creare']]
     df['data_emiterii'], df['data_cerere'], df['data_creare'] = date1_list, date2_list, date3_list
 
+    #extracting year and approval number from title
+    autn, an = [] , []
+    for title in df['titlu']:
+        title = title.replace("Autorizație de construire ","").replace("/"," ")
+        autn.append(title.split()[0])
+        an.append(title.split()[1])
+    df['an'] = an
+    df['nr'] = autn
+
     # calculating the duration for approval creation and approval release
     durata1, durata2 = [] , []
     for index, row in df.iterrows():
@@ -85,10 +94,10 @@ def autproc(input_file):
 
     rec = []
     for index, row in df.iterrows():
-        rec.append([row['titlu'], row['proiectant'], row['data_emiterii'], row['actiuni'], row['adresa'], row['strada'], row['nr'], row['intocmit'], row['durata_emitere'], row['durata_creare']])
+        rec.append([row['an'], row['nr'], row['proiectant'], row['data_emiterii'], row['actiuni'], row['adresa'], row['strada'], row['nr'], row['intocmit'], row['durata_emitere'], row['durata_creare']])
     
     # writing the output in a .csv file
-    df_p = pd.DataFrame(rec, columns=['titlu','proiectant','data_emiterii','actiuni','adresa','strada','nr','intocmit','durata_emitere','durata_creare'])
+    df_p = pd.DataFrame(rec, columns=['an','nr','proiectant','data_emiterii','actiuni','adresa','strada','nr','intocmit','durata_emitere','durata_creare'])
     output_file = "processed_" + input_file
     df_p.to_csv(output_file, index = False)
 
