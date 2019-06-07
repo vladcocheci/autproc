@@ -54,7 +54,7 @@ def autproc(input_file):
         autn.append(title.split()[0])
         an.append(title.split()[1])
     df['an'] = an
-    df['nr'] = autn
+    df['nr_autorizatie'] = autn
 
     # calculating the duration for approval creation and approval release
     durata1, durata2 = [] , []
@@ -94,10 +94,10 @@ def autproc(input_file):
 
     rec = []
     for index, row in df.iterrows():
-        rec.append([row['an'], row['nr'], row['proiectant'], row['data_emiterii'], row['actiuni'], row['adresa'], row['strada'], row['nr'], row['intocmit'], row['durata_emitere'], row['durata_creare']])
+        rec.append([row['an'], row['nr_autorizatie'], row['proiectant'], row['data_emiterii'], row['actiuni'], row['adresa'], row['strada'], row['nr'], row['intocmit'], row['durata_emitere'], row['durata_creare']])
     
     # writing the output in a .csv file
-    df_p = pd.DataFrame(rec, columns=['an','nr','proiectant','data_emiterii','actiuni','adresa','strada','nr','intocmit','durata_emitere','durata_creare'])
+    df_p = pd.DataFrame(rec, columns=['an','nr_autorizatie','proiectant','data_emiterii','actiuni','adresa','strada','nr','intocmit','durata_emitere','durata_creare'])
     output_file = "processed_" + input_file
     df_p.to_csv(output_file, index = False)
 
