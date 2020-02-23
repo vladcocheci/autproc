@@ -15,4 +15,4 @@ RUN cd libpostal && ./bootstrap.sh && ./configure --datadir ~/libpostal_data && 
 RUN pip install nltk pandas datetime bs4 postal
 RUN ["python", "-c", "import nltk; nltk.download('punkt'); nltk.download('averaged_perceptron_tagger')"]
 
-ENTRYPOINT ["python", "./scraper_autorizatii_cj.py"]
+ENTRYPOINT ["python", "-u", "./scraper_autorizatii_cj.py"]
